@@ -12,6 +12,21 @@ sp_auth = SpotifyOAuth(
 )
 
 
+def get_top_tracks(sp):
+    top_tracks = sp.current_user_top_tracks(limit=10, time_range="medium_term")["items"]
+    return top_tracks
+
+
+def get_recommendations(sp, top_tracks):
+    # extract tracks IDs from the top tracks for the recommendation
+    top_tracks_id = [track["id"] for track in top_tracks]
+    # give recommendation based on top tracks (limit to 5 seed tracks)
+    recommendations = sp.recommendations(seed_tracks=top_tracks_id[:5], limit=10)[
+        "tracks"
+    ]
+    return recommendations
+
+
 # the view that displays hte top tracks and recommendations
 def index(request):
     # check if the user is authenticated by looking for the 'token_info' in the session
@@ -24,15 +39,10 @@ def index(request):
     sp = Spotify(auth=token_info["access_token"])
 
     # get user top tracks
-    top_tracks = sp.current_user_top_tracks(limit=10, time_range="medium_term")["items"]
+    top_tracks = get_top_tracks(sp)
 
     # reccomendation based on top tracks
-    # extract tracks IDs from the top tracks for the recommendation
-    top_tracks_id = [track["id"] for track in top_tracks]
-    # give recommendation based on top tracks (limit to 5 seed tracks)
-    recommendations = sp.recommendations(seed_tracks=top_tracks_id[:5], limit=10)[
-        "tracks"
-    ]
+    recommendations = get_recommendations(sp, top_tracks)
 
     return render(
         request,

@@ -1,0 +1,23 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "song_recommendation/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "song_recommendation/wsgi.py"
+      }
+    ],
+    "env": {
+      "SPOTIPY_CLIENT_ID": "@spotipy_client_id",
+      "SPOTIPY_CLIENT_SECRET": "@spotipy_client_secret",
+      "SPOTIPY_REDIRECT_URI": "@spotipy_redirect_uri",
+      "SECRET_KEY": "@secret_key",
+      "DEBUG": "@debug"
+    }
+  }
+    

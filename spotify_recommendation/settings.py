@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv("DJANGO_Secret_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['gentle-inlet-29851.herokuapp.com']
+ALLOWED_HOSTS = ['gentle-inlet-29851.herokuapp.com', "localhost", "127.0.0.1"]
 
 
 # Application definition

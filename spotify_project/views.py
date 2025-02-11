@@ -3,7 +3,6 @@ from django.conf import settings
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 import spotipy
-from spotipy.exceptions import SpotifyException
 
 sp_auth = SpotifyOAuth(
     client_id=settings.SPOTIPY_CLIENT_ID,
@@ -12,24 +11,31 @@ sp_auth = SpotifyOAuth(
     scope="user-top-read user-library-read",
 )
 
-
 def get_top_tracks(sp):
     top_tracks = sp.current_user_top_tracks(limit=10, time_range="medium_term")["items"]
-    print("Top Tracks:", top_tracks)
     return top_tracks
 
 
 def get_recommendations(sp, top_tracks):
+    if not top_tracks:
+        return []
+    # extract tracks IDs from the top tracks for the recommendation
+    top_tracks_id = [track["id"] for track in top_tracks]
+    print('seed trackIDs', top_tracks_id)
+
+    if not top_tracks_id:
+        return []
+    
     try:
-        top_tracks_id = [track["id"] for track in top_tracks]
-        if not top_tracks_id:
-            raise ValueError("No valid track IDs found for recommendations.")
-        
-        recommendations = sp.recommendations(seed_tracks=top_tracks_id[:5], limit=10)["tracks"]
+        # give recommendation based on top tracks (limit to 5 seed tracks)
+        recommendations = sp.recommendations(seed_tracks=top_tracks_id[:5], limit=10)[
+            "tracks"
+        ]
         return recommendations
-    except SpotifyException as e:
-        print(f"Spotify API Error: {e}")
-        return []  # Return an empty list or handle the error as needed
+    except spotipy.exceptions.SpotifyException as e:
+        print(f'Spotify API error: {e}')
+        return []
+    
 
 
 # the view that displays hte top tracks and recommendations
@@ -48,6 +54,7 @@ def index(request):
 
     # reccomendation based on top tracks
     recommendations = get_recommendations(sp, top_tracks)
+    print("Recommendations:", recommendations)
 
     return render(
         request,

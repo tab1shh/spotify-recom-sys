@@ -34,15 +34,14 @@ A song recommendation system that leverages the Spotify API to fetch and recomme
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/tab1shh/song-recommendation.git
-   cd song-recommendation
+   git clone https://github.com/tab1shh/spotify-recom-sys
    ```
 
 2. **Create a Virtual Environment**
 
    ```bash
    python -m venv venv
-   source venv/bin/activate # On Windows use 'venv\Scripts\activate\
+   source venv/bin/activate # On Windows use 'venv\Scripts\Activate'
    ```
 
 3. **Install Dependencies**
